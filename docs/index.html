@@ -1,0 +1,849 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Rescue In-App Android SDK</title>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style>
+    body {
+      font-family: "Roboto",sans-serif;
+    }
+  </style>
+  
+</head>
+<body unresolved class="fullbleed">
+
+  <google-codelab title="Rescue In-App Android SDK"
+                  environment="web"
+                  feedback-link="https://github.com/LogmeinRescue/Android-SDK/issues">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p>The Rescue In-App Support Android SDK allows your customers to establish a Rescue support session within your app.</p>
+<p>Take advantage of In-App Support:</p>
+<ul>
+<li>Gain access to end-user app issues and enable quicker diagnosis and problem resolution without the end-user ever leaving the app</li>
+<li>Optimize the customer experience with a seamless, intuitive customer support solution</li>
+<li>Reduce app abandonment levels</li>
+<li>Maximize customer satisfaction</li>
+</ul>
+<aside class="special"><p>If you are not familiar with Rescue, get started with our <a href="https://secure.logmeinrescue.com/welcome/Documents/Pdfs/rescue_gettingstarted.pdf" target="_blank">quickstart guide</a>. For advanced configuration options, see the <a href="https://secure.logmeinrescue.com/welcome/documents/pdfs/rescue_admin_center_userguide.pdf" target="_blank">Administration Center User Guide</a>.</p>
+</aside>
+<h2>Capabilities</h2>
+<p>The SDK enables your technician to use the following features with LogMeIn Rescue Technician Console:</p>
+<ul>
+<li>Retrieve device information</li>
+<li>Chat with the end-user</li>
+<li>Send an URL</li>
+<li>See the app&#39;s screen (depending on configuration)</li>
+<li>See video stream from the user&#39;s camera (depending on configuration)</li>
+<li>Annotate the app&#39;s screen</li>
+</ul>
+<aside class="warning"><p>When using the In-App Support SDK with your app, memory and CPU utilization, power consumption as well as network data usage may increase.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Before you start" duration="0">
+        <p>This chapter describes the prerequisites of integrating the Rescue Android SDK into a 3rd-party application.</p>
+<h2>API level requirements</h2>
+<p><strong>API Level 10</strong> (Gingerbread) or higher is required to <strong>compile</strong>. Therefore, the embedder app is required to have minSdkVersion=10+.</p>
+<p><strong>API Level 16</strong> (Jelly Bean) or higher is required to <strong>start sessions.</strong></p>
+<p>If your application is running on earlier versions of android, please be aware that the <code>SessionFactory.newInstance()</code><em> </em>method will throw an Exception, therefore a session cannot be instantiated. Before enabling an element related to Rescue support session, you should check the platform on which your application is running. </p>
+<pre><code>private void setUpRescueSessionStartButton() {
+    // Make sure we&#39;re running on supported Android platform to use Rescue SDK APIs
+    if (Build.VERSION.SDK_INT &gt;= RescueSDK.getMinimumSupportedAndroidApiLevel()) {
+        // Setup Rescue related UI components
+    }
+}</code></pre>
+<h3>Module specific API level requirements</h3>
+<p>The minimum API level for the device screen streaming module is API 21.</p>
+<h2>Software requirement for development</h2>
+<p>The SDK is designed to be used with <strong>Android Studio</strong>, the currently official IDE for developing native Android applications. </p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Modules" duration="0">
+        <table>
+<tr><td colspan="1" rowspan="1"><p><strong>Module</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Functionality</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>core</p>
+</td><td colspan="1" rowspan="1"><p>Session and chat</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>camerastreaming</p>
+</td><td colspan="1" rowspan="1"><p>Camera streaming and annotation</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>devicescreenstreaming</p>
+</td><td colspan="1" rowspan="1"><p>System wide remote viewing capability and annotation tools. (Excluding <a href="https://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#FLAG_SECURE" target="_blank">SECURE</a> content) </p>
+<p><strong>The minimum API level for this module is API 21.</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>appscreenstreaming</p>
+</td><td colspan="1" rowspan="1"><p>In-app Remote viewing (Including <a href="https://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#FLAG_SECURE" target="_blank">SECURE</a> content)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>deviceinfo</p>
+</td><td colspan="1" rowspan="1"><p>Device diagnostics</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>resources</p>
+</td><td colspan="1" rowspan="1"><p>Localized strings for common use-cases of the SDK with <em>rescuesdk_</em> prefix</p>
+<p>StringResolver class, which can transform events into human-readable messages</p>
+<p>Contains translations for the following languages: en, ar, bg, cs, da, de, el, es, es-rAR, et, fa, fi, fr, hr, hu, in, it, iw, ja, ko, lt, lv, my, nb, nl, no, pl, pt, pt-rBR, ro, ru, sk, sl, sr, sv, th, tr, uk, vi, zh, zh-rCN</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add the SDK as a dependency" duration="0">
+        <p>Define the location of the SDK maven repository as well as the dependencies by adding the following lines to the build.gradle file of your application module:</p>
+<pre><code>repositories {
+   maven {
+       url &#39;https://raw.githubusercontent.com/logmeinrescue/android-sdk/master/maven/repository&#39;
+   }
+}
+...
+dependencies {
+   compile (&#39;com.logmein.rescuesdk:resources:2.0.0@aar&#39;) {
+      transitive = false // avoid resources dependencies
+   }
+   compile (&#39;com.logmein.rescuesdk:core:2.0.0@aar&#39;) {
+      transitive = true 
+   }     
+   // other SDK modules that your app requires
+}</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configure application settings" duration="0">
+        <h3>Registering app lifecycle reporter</h3>
+<p>During a session, the user might put the embedder application to the background. The SDK reports the background state, so that the technician is notified whenever the user navigates away from the application.</p>
+<p>You <strong>must</strong> use the following snippet in your application&#39;s onCreate method:</p>
+<p><strong>MyApplication.java</strong></p>
+<pre><code>public class MyApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        RescueSDK.initializeLifecycleReporter(this);
+    }
+}</code></pre>
+<aside class="special"><p>You also have to register the custom application class in your app&#39;s manifest file!</p>
+</aside>
+<h3>Memory considerations</h3>
+<p>The implementation of the screen sharing feature allocates considerable amount of memory, which may cause an <code>OutOfMemoryError</code> in the embedder application. Therefore, the embedder application should add the <em>largeHeap=true</em> attribute to its application tag, in the AndroidManifest.xml.</p>
+<p><strong>AndroidManifest.xml</strong></p>
+<pre><code>&lt;application android:name=&#34;.MyApplication&#34; 
+    android:icon=&#34;@drawable/ic_launcher&#34; 
+    android:label=&#34;@string/app_name&#34; 
+    android:largeHeap=&#34;true&#34; 
+    android:logo=&#34;@drawable/logo&#34;
+    android:theme=&#34;@style/AppTheme&#34; &gt; 
+&lt;/application&gt;</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create an API key" duration="0">
+        <p>You must provide the key upon initiating a Rescue session.</p>
+<h2>Create a Rescue Account</h2>
+<p><a href="https://secure.logmeinrescue.com/Account/Registration/Trial" target="_blank">Register a Rescue Trial Account</a> to acquire a mobile license.</p>
+<aside class="special"><p>If you already have an account, skip this step.</p>
+</aside>
+<h2>Generate an API key</h2>
+<ol type="1" start="1">
+<li>Log in to your Rescue account at <a href="https://secure.logmeinrescue.com/account/login" target="_blank">logmeinrescue.com</a>.</li>
+<li>Select the Administration Center from the menu on the top right.<br> The Rescue Administration Center is displayed.</li>
+<li>On the Global Settings tab, click <strong>Manage API keys</strong> under <strong>API Key</strong>.<br>The <strong>API Keys</strong> window is displayed.</li>
+<li>Click <strong>Create new API key</strong>.</li>
+<li>Enter the Package name of your app.</li>
+<li>Click <strong>Create</strong>.<br></li>
+</ol>
+<p>A 40-character API key is generated for your app. </p>
+<p>Ensure the following:</p>
+<ul>
+<li>The key is enabled.</li>
+<li>The key and the channel ID both belong to the same company.</li>
+</ul>
+<aside class="special"><p>Tip: You can edit and disable API keys anytime by clicking <img style="max-width: 36.00px" src="img/37e0bf757290e311.png">.</p>
+</aside>
+<aside class="special"><p>The Package name is the unique identifier of your app that you can find in the package attribute at the root element of your manifest file.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Creating a session" duration="0">
+        <p>The connection between your application and the Rescue Technician Console is represented in the SDK by a Session object. </p>
+<p>When the user of your application requests support, you should first create a Session using the SessionFactory class:</p>
+<pre><code>SessionFactory factory = SessionFactory.newInstance();
+String apiKey = &#34;YOUR_API_KEY&#34;; //substitute your API key
+SessionFactory.SessionCreationCallback callback = 
+new SessionFactory.SessionCreationCallback() {
+    @Override
+    public void onSessionCreated(Session session) {
+    // The session is now created
+    }
+}
+
+factory.create(getApplicationContext(), apiKey, callback);</code></pre>
+<p>The <code>SessionFactory.create(...)</code><em> </em>method takes 3 parameters:</p>
+<ul>
+<li>Context - the embedder&#39;s application context</li>
+<li>ApiKey - the API key generated from the Administration Center (see instructions on how to generate an api key)</li>
+<li>Callback - the callback to be invoked when the session instance is created</li>
+</ul>
+<p>Note that the <code>SessionFactory.create(...)</code> call is asynchronous. It creates a session object in a background thread, and invokes the supplied <em>callback</em> once the instance is created. The callback is invoked in the main thread.</p>
+<p>After the session instance is created, the embedder application can start the session using <code>Session.connect(SessionConfig)</code> method.</p>
+<p>This method takes a <code>SessionConfig</code> object, which can be created using the static factory methods of the class.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>SessionConfig methods</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Functionality</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>createWithPinCode(String)</code></p>
+</td><td colspan="1" rowspan="1"><p>This method takes a <strong>PIN code</strong> which is a unique 6-digit code that can be generated by a technician in the Rescue Technician Console. </p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>createWithChannelId(String)</code></p>
+</td><td colspan="1" rowspan="1"><p>This method takes a string parameter, which is the <strong>Channel ID</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>createWithChannelNameAndCompanyId(String, String)</code></p>
+</td><td colspan="1" rowspan="1"><p>This method takes the <strong>Channel Name</strong> and the <strong>Company ID</strong></p>
+</td></tr>
+</table>
+<aside class="warning"><p>When using the channel-based approach, we recommend that your app obtain your specific Channel ID(s) or Channel Name/CompanyID pair(s) from your backend server instead of hard-coding them to your app&#39;s source code. This way you will be able to change your channel configuration without updating your app.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Interacting with the session" duration="0">
+        <p>The SDK facilitates the event bus pattern in order to notify the embedder application about status updates during the session.</p>
+<p>To get familiar with the eventBus pattern, consider reading the <a href="https://github.com/google/guava/wiki/EventBusExplained" target="_blank">guava paper</a>.</p>
+<h2>Accessing the eventBus instance</h2>
+<p>Once the Session object has been created, you can ask for the event bus interface right away from the Session class.</p>
+<pre><code>EventDispatcher bus = session.getEventBus();</code></pre>
+<h2>Creating an event handler</h2>
+<p>In order to receive updates, you must implement your own handler class and add it to the event bus. </p>
+<p>For example, if you want to receive <code>ConnectedEvent</code>s, first you have to define an event handler method with the <code>@Subscribe</code> annotation:</p>
+<pre><code>public class YourHandler {
+    @Subscribe
+    public void onConnected(ConnectedEvent event) {
+        Log.d(&#34;SDK&#34;, &#34;We are now connected!&#34;);
+    }
+}</code></pre>
+<p>The handler methods must satisfy the following requirements:</p>
+<ul>
+<li>public</li>
+<li>void return value</li>
+<li>annotated with <code>@Subscribe</code><em> (com.logmein.rescuesdk.api.eventbus.Subscribe)</em></li>
+<li>have exactly one parameter (which is the event type it will handle)</li>
+</ul>
+<p>The name of the handler method can be anything, it is not used by the SDK.</p>
+<h2>Registering an event handler</h2>
+<p>After creating the event handler, you must register it with the event bus using the <code>add</code><em> </em>method:</p>
+<pre><code>YourHandler yourHandler = new YourHandler();
+bus.add(yourHandler);</code></pre>
+<p>After your handler is registered, it will receive all those event types (or any subclass of those events) that it is subscribed to.</p>
+<p>If you no longer want to receive events with your event handler, you can remove the handler from the event bus with:</p>
+<pre><code>bus.remove(yourHandler);</code></pre>
+<h2>Produced events</h2>
+<p>The eventBus implementation we use offers a concise way to eliminate stateful subscribers, by introducing the definition of <strong>Producer</strong>s.</p>
+<p>When a subscriber is registered through the <code>EventDispatcher.add()</code> method, it will receive the last Event that has been dispatched with that type, or any subclass of that type.</p>
+<p>This can be useful, for example, when recovering your application from a background state.</p>
+<p>Your app does not need to save the status of the connection, because upon registering to a <code>ConnectionEvent</code>, the handler of that event will be invoked immediately, so that the actual state will be propagated without the need to query it.</p>
+<aside class="special"><p>You can also take advantage of custom producers:</p>
+<ol type="1" start="1">
+<li>Create an instance <code>Producer.forClass(...)</code> method</li>
+<li>Register the instance using the add method of the <code>EventDispatcher</code>.</li>
+</ol>
+<p>After registration, newly added handlers to your specific event type will be invoked immediately.</p>
+<p><strong>Produced events by default:</strong></p>
+<ul>
+<li><code>ConnectionStateEvent</code></li>
+<li><code>FlashlightAvailabilityStateEvent</code></li>
+<li><code>FlashlightStateEvent</code></li>
+<li><code>StreamingPauseStateEvent</code></li>
+<li><code>StreamingFreezeStateEvent</code></li>
+<li><code>StreamingStateEvent</code></li>
+<li><code>ChatConnectionStateEvent</code></li>
+</ul>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Session lifecycle" duration="0">
+        <p>The Session goes through different states during its life cycle. After a session is initiated from your application, it connects to LogMeIn servers and appears in the session queue of those technicians that are assigned to the channel with which the session was created.</p>
+<p><img style="max-width: 508.04px" src="img/e5150f923fa60e71.png"></p>
+<p>When the Session&#39;s state changes, the SDK publishes an event from the following hierarchy of event classes in the <em>com.logmein.rescuesdk.api.session.event </em>package.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Description</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectionStateEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Base class of all session status events.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectionActiveEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Base class for events indicating an active connection</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application is successfully connected to a technician, and they started the session in their queue.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectionInactiveEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Base class for events indicating an inactive connection</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectingEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application started to connect to LogMeIn servers.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisconnectingEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The session started to close.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SessionClosedByTechEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The technician started to close the session.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SessionClosedByUserEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application user started to close the session.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisconnectedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The closing of the session is finished.Tthis is the last status change event related to this session. No more interaction is possible with the session.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ReconnectingFailedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The session has been closed because it failed to reconnect to the Technician Console for too long.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>WaitingForTechnicianEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The session has appeared in the queue of one or more technicians but they haven&#39;t started it yet.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SessionTransferEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The session is being transferred from one technician to another.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SessionHoldEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The technician has put the session on hold.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>TechConsoleClosedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The technician has closed the Technician Console. The session does not close in this case, it will be resumed whenever the technician restarts the Technician Console.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>TechConsoleConnectionLostEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The Technician Console lost network connectivity. The session will resume if the network is restored on the technician&#39;s side.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ReconnectingEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application has lost network connectivity. The session will resume if the network is restored on the application&#39;s side.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConnectionErrorEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The session failed to connect to a technician due to an error. To resolve the exact cause of the issue, please refer to the related chapter.</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Chatting with a technician" duration="0">
+        <p>Once the support session has been established, the parties can exchange text messages. </p>
+<p>To gain better understanding of the system, consider the following class hierarchy:</p>
+<p>The SDK offers different types of <code>ChatMessageEvent</code>s. These are dispatched in the following cases:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Description</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>LocalChatMessageEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Embedder sends message to the technician</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RemoteChatMessageEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Message arrived from the technician </p>
+</td></tr>
+</table>
+<h3>Sending a message</h3>
+<p>To send a chat message, the client app needs a <code>ChatClient</code> object. You can acquire such object by subscribing to the <code>ChatConnected</code> event.</p>
+<p>You can access the <code>ChatClient</code> object by calling the <code>getChatClient()</code> method on the event.</p>
+<p>The <code>ChatClient</code> object obtained this way is only valid until a <code>ChatDisconnectedEvent</code> is received.</p>
+<aside class="warning"><p>Note that if you try to call any method on the <code>ChatClient</code> object when it is not valid (the chat is disconnected), then an <code>IllegalStateException</code> will be thrown</p>
+</aside>
+<pre><code>public class YourHandler {
+    @Subscribe
+    public void onChatConnected(ChatConnectedEvent event) {
+        ChatClient client = event.getChatClient();
+        client.sendMessage(&#34;Hey Mr Technician!&#34;);
+    }
+}</code></pre>
+<p>You can send a message to the technician, by calling the <code>sendMessage()</code><em> </em>method on the <code>ChatClient</code> object, with any string parameter.</p>
+<h3>Receiving messages</h3>
+<p>To receive messages from the technician, the client app has to register a handler of <code>RemoteChatMessageEvent</code>.</p>
+<pre><code>public class YourHandler {
+    @Subscribe
+    public void onRemoteChatMessage(RemoteChatMessage event) {
+        StringBuilder messageBuilder = new StringBuilder();
+        Date date = new Date(event.getTime());
+        String timeOfArrival = SimpleDataFormat(&#34;HH:mm:ss&#34;).format(date);
+        messageBuilder.append(&#34;[&#34;).append(timeOfArrival).append(&#34;]&#34;);
+        messageBuilder.append(&#34;-&#34;).append(event.getMessage());
+        Log.d(&#34;SDK&#34;, messageBuilder.toString());
+    }
+}</code></pre>
+<p>Note that by subscribing to the generic <code>ChatMessageEvent</code> class you will receive all subclasses of these events, including the local and remote messages as well.</p>
+<h3>Indicate and receive typing notification</h3>
+<p>Your application should indicate when your user is typing a chat message as follows:</p>
+<pre><code>ChatClient.sendTyping()</code></pre>
+<p>The client app may call this method repeatedly. The typing notification appears in the Technician Console, and it is reset a few seconds after the last call to this method.</p>
+<p>Subscribe to the <code>TechnicianTypingEvent</code>, so your application is notified when the technician is typing:</p>
+<pre><code> @Subscribe
+ public void onRemoteTyping(TechnicianTypingEvent event) {
+     Log.d(&#34;SDK&#34;, &#34;typing...&#34;);
+ }</code></pre>
+<h3>Technician sends an URL</h3>
+<p>Technicians can send an URL to be displayed to the user. Your application can get the sent URL as follows:</p>
+<pre><code> @Subscribe
+ public void onUrlReceived(UrlMessageEvent event) {
+     Log.d(&#34;SDK&#34;, &#34;got url:&#34;+event.getUrl());
+ }</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="App screen sharing" duration="0">
+        <p>When a session is established using the Rescue SDK, the contents of the embedder application&#39;s root view can be shared with the technician. </p>
+<p><strong>build.gradle (App)</strong></p>
+<pre><code>dependencies {
+   ...
+   compile (&#39;com.logmein.rescuesdk:appscreenstreaming:3.0.0@aar&#39;) {
+      transitive = true 
+   }     
+   ...     
+}</code></pre>
+<p>Before creating a <code>Session</code>, tell the <code>SessionFactory</code> that it should use <code>AppScreenStreamingExtension</code>.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(AppScreenStreamingExtension.class);
+sessionFactory.create(...);</code></pre>
+<p>The screen sharing may start automatically depending on settings on the technician&#39;s side. If the embedder application stops screen sharing, it can be restarted by the technician at any time during the session.</p>
+<p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side.</p>
+<p>The embedder application can receive updates about the current status of screen sharing by subscribing to the related events. Consider the following class hierarchy:</p>
+<p><img style="max-width: 624.00px" src="img/73aff0b63eb3d98f.png"></p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Event</p>
+</td><td colspan="1" rowspan="1"><p>Description</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisplayStreamingStartedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The device view is visible for the technician</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisplayStreamingStoppedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The device view is no longer visible for the technician</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisplayStreamingPausedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The display stream has been paused by the embedder app</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DisplayStreamingResumedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The display stream has been resumed by the embedder app</p>
+</td></tr>
+</table>
+<p>The embedding application can obtain an instance of <code>StreamingClient</code> from an instance of <code>DisplayStreamingStartedEvent</code>.</p>
+<p>Screen sharing can be paused and resumed by calling <code>StreamingClient.pause()</code> and <code>StreamingClient.resume()</code>, respectively. Screen sharing may be stopped by calling <code>StreamingClient.stop()</code>. </p>
+<h3>Whiteboard (and laserpointer)</h3>
+<p>During a support session, the technician might encounter certain situations, when pointing the user in the right direction is necessary. The whiteboard (and laserpointer) tool is a drawing tool the technician can use to annotate on the device&#39;s screen. </p>
+<p>When the user puts the embedder app in the background, the drawings will not be visible anymore.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Device screen sharing (API21&#43;)" duration="0">
+        <p>Device screen sharing enables the technician to see everything (except secure windows) on the screen of the user&#39;s device. </p>
+<p>It provides the same functionality as the app screen streaming, including whiteboarding, laserpointer, start/stop events and such.</p>
+<p>When the technician wants to start a remote viewing session, and the app is in foreground, then the following dialog is displayed to the user.</p>
+<p>If the user consents to this dialog, then the remote viewing will starts right away.</p>
+<p><img style="max-width: 286.34px" src="img/9819102bcdc0f0ae.png"></p>
+<p><strong>build.gradle (App)</strong></p>
+<pre><code>dependencies {
+   ...
+   compile (&#39;com.logmein.rescuesdk:devicescreenstreaming:3.0.0@aar&#39;) {
+      transitive = true 
+   }     
+   ...     
+}</code></pre>
+<p>Before creating a <code>Session</code>, tell the <code>SessionFactory</code> that it should use <code>DeviceScreenStreamingExtension</code>.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(DeviceScreenStreamingExtension.class);
+sessionFactory.create(...);</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Camera sharing" duration="0">
+        <p>The SDK can be used to stream the camera image of the device to the Technician Console. This way the technician can see what the user sees through the camera of the device.</p>
+<p>You can enable camera streaming in the SDK with the following steps.</p>
+<p>Declare the camerastreaming library in your dependencies section:</p>
+<p><strong>build.gradle (App)</strong></p>
+<pre><code>dependencies {
+   ...
+   compile (&#39;com.logmein.rescuesdk:camerastreaming:3.0.0@aar&#39;) {
+      transitive = true 
+   }     
+   ...     
+}</code></pre>
+<p>Before creating a <code>Session</code>, tell the <code>SessionFactory</code> that it should use <code>CameraStreamingExtension</code>.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(CameraStreamingExtension.class);
+sessionFactory.create(...);</code></pre>
+<p>After the session is passed back to your app in the <code>onSessionCreated</code> callback, you can obtain the camera streaming extension.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>CameraStreamingExtension extension = rescueSession.getExtension(CameraStreamingExtension.class);</code></pre>
+<h3>Rendering the camera image</h3>
+<p>You can use the <code>CameraStreamView</code> class to show the camera image to the user so they can see what is streamed to the technician. To use it, place it in your layout as follows.</p>
+<p><strong>Layout.xml (snippet)</strong></p>
+<pre><code>&lt;com.logmein.rescuesdk.api.ext.CameraStreamView
+        android:id=&#34;@+id/camera_stream_view&#34;
+        android:layout_width=&#34;match_parent&#34;
+        android:layout_height=&#34;match_parent&#34; /&gt;</code></pre>
+<p>Get a reference to the <code>CameraStreamView</code>, and start to render the camera image to it:</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>CameraStreamView cameraStreamView = (CameraStreamView) findViewById(R.id.camera_stream_view);
+extension.startRendering(cameraStreamView);</code></pre>
+<aside class="special"><p>Rendering to a <code>CameraStreamView</code> works even if the Session is not connected to a technician.</p>
+</aside>
+<aside class="warning"><p><strong>Handling when camera is not available</strong></p>
+<p>It is possible that, for some reason, the camera of the device is inaccessible (for example, other apps using the camera did not release it)</p>
+<p>When this happens, the SDK dispatches the <strong><code>CameraUnableToStartEvent</code></strong><strong> </strong>indicating that rendering/streaming will not work. This event is dispatched when the SDK tries to access the camera. This might not be the result of an interaction with the SDK, for example, if the technician initiates the stream, and your app is not currently rendering, than the event will be dispatched.</p>
+<p>Therefore, it is advisable to handle the <strong><code>CameraUnableToStartEvent</code></strong> during the whole lifecycle of the session, and display user facing information that the camera will not be available during this support session.</p>
+</aside>
+<h3>Controlling the stream</h3>
+<p>If you enabled camera streaming when creating a <code>Session</code>, the stream starts automatically when the Session is connected to a technician. (regardless of whether you implemented rendering in your app) </p>
+<p>When the application is not in the foreground, the camera image is not sent to the technician.</p>
+<p>The embedder application can receive updates about the current status of the camera stream, by subscribing to related events:</p>
+<p><img style="max-width: 624.00px" src="img/386943172ee6f51a.png"></p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Description</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>CameraStreamingStartedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The camera stream started</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>CameraStreamingStoppedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The camera stream stopped</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>CameraStreamingPausedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The camera stream has been paused by the embedder app</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>CameraStreamingResumedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The camera stream has been resumed by the embedder app</p>
+</td></tr>
+</table>
+<p>The embedding application can control the camera stream with the <code>StreamingClient</code> object, which can be obtained from an instance of <code>CameraStreamingStartedEvent</code>.</p>
+<p>The camera stream can be paused and resumed by calling <code>StreamingClient.pause()</code> and <code>StreamingClient.resume()</code>, respectively.</p>
+<aside class="warning"><p><strong>Warning: </strong>Avoid calling <code>StreamingClient.stop()</code> during camera streaming! </p>
+<p>Camera streaming may be terminated permanently for this session. The technician might not have the option to re-initiate streaming depending on the Technician Console version.</p>
+</aside>
+<h3>Technician tools</h3>
+<p>The technician can use the whiteboard tool in the Technician Console with a camera stream. The contents of the whiteboard will follow the movement of the camera image. This feature will work out-of-the-box, when using the provided <code>CameraStreamView</code>.</p>
+<p>The technician can &#34;freeze&#34; the camera stream, which means a snapshot of the current camera image will be shown at both sides of the stream until it is &#34;unfrozen&#34;. </p>
+<p><strong>Related events: </strong><code>StreamingFrozenEvent, StreamingUnfrozenEvent</code></p>
+<h3>Turning the flashlight on and off</h3>
+<p>Once, you obtained the extension instance, you can control the device&#39;s flashlight with it. Controlling the flashlight is only enabled when the camera stream is active.<br></p>
+<p>Turn on the flashlight with:</p>
+<pre><code>extension.flashOn()</code></pre>
+<p>Turn off the flashlight with:</p>
+<pre><code>extension.flashOff()</code></pre>
+<p>Once the flashlight&#39;s status is changed, the SDK dispatches a <code>FlashlightTurnedOn</code><em> </em>or a <code>FlashlightTurnedOff</code><em> </em>event about it.</p>
+<p>Some devices might not have a flashlight. In order to gracefully handle this case, you should subscribe to the <code>FlashlightAvailable</code> and the <code>FlashlightUnavailable</code> events, and enable the related UI components according to these. </p>
+<p>These events also let you know when you <em>can</em> call the flashlight controlling methods.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Audio streaming" duration="0">
+        <p>Currently the audio streaming functionality only works with the camera streaming module.</p>
+<p>To enable audio streaming during camera streaming sessions, use the related extension:</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(AudioStreamingExtension.class);
+sessionFactory.create(...);</code></pre>
+<p>After the session is passed back to your app in the <code>onSessionCreated</code> callback, you can obtain the camera streaming extension.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>AudioStreamingExtension extension = rescueSession.getExtension(AudioStreamingExtension.class);
+
+extension.muteRecording();
+extension.unmuteRecording();</code></pre>
+<p>The extension provides methods to enable/disable the sending of the user microphone input for the embedder.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Closing a session" duration="0">
+        <p>After your application is done with the support session, it is able to close the session, by calling</p>
+<p><code>session.disconnect().</code></p>
+<p>After this, you receive a <code>DisconnectingEvent</code>. When the disconnecting has been finished, a <code>DisconnectedEvent</code> is received indicating that the session is no longer functional. </p>
+<p>If you wish to create a new support session, you must create a new session instance.</p>
+<p>The session can be also disconnected by the technician, in which case, you receive the described events.</p>
+<h2>Post-session customer survey</h2>
+<p>The rescue infrastructure can be configured to send arbitrary URLs at the end of each session to record customer satisfaction with a survey. To obtain the survey URL, use the <code>DisconnectedEvent</code>&#39;s related property:</p>
+<pre><code> @Subscribe
+ public void onDisconnected(DisconnectedEvent event) {
+     String surveyUrl = event.getCustomerSurveyUrl();
+     Log.d(&#34;SDK&#34;, &#34;Survey url: &#34;+e.getCustomerSurveyUrl());
+     // TODO open survey url with default browser
+ }</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Permission handling" duration="0">
+        <p>The permissions requested by the Rescue SDK are listed in the following table:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong><code>android.permission.*</code></strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Declaring module</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Needed for...</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Requester</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>INTERNET</code></p>
+</td><td colspan="1" rowspan="1"><p>core</p>
+</td><td colspan="1" rowspan="1"><p>Essential functionality</p>
+</td><td colspan="1" rowspan="1"><p>None</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>CAMERA</code></p>
+</td><td colspan="1" rowspan="1"><p>camerastreaming</p>
+</td><td colspan="1" rowspan="1"><p>Camera streaming</p>
+</td><td colspan="1" rowspan="1"><p>Embedder</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RECORD_AUDIO</code></p>
+</td><td colspan="1" rowspan="1"><p>camerastreaming</p>
+</td><td colspan="1" rowspan="1"><p>VoIP during camera sessions</p>
+</td><td colspan="1" rowspan="1"><p>Embedder</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>READ_PHONE_STATE</code></p>
+</td><td colspan="1" rowspan="1"><p>deviceinfo</p>
+</td><td colspan="1" rowspan="1"><p>Device diagnostics</p>
+</td><td colspan="1" rowspan="1"><p>SDK</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SYSTEM_ALERT_WINDOW</code></p>
+</td><td colspan="1" rowspan="1"><p>devicescreenstreaming</p>
+</td><td colspan="1" rowspan="1"><p>System-wide whiteboard and laser pointer functionality</p>
+</td><td colspan="1" rowspan="1"><p>SDK</p>
+</td></tr>
+</table>
+<p>Please note that when using <em>gradle</em> and the <a href="https://developer.android.com/studio/releases/gradle-plugin.html" target="_blank">official android plugin</a> you do not have to add these permissions to your application&#39;s manifest, because the build tool merges these from the corresponding SDK modules.</p>
+<aside class="special"><p><strong>Android 6.0 compatibility considerations</strong></p>
+<p>Above API level 23 the dangerous subset of the mentioned permissions must be requested from the user through a runtime permission dialog. For further information on this topic, consult the <a href="https://developer.android.com/training/permissions/requesting.html" target="_blank">official guide</a>.</p>
+<p>The SDK requests these permissions when they are required for certain functionalities. There is no need for the embedder application to handle those requests. If your app is in foreground, the system permission request dialog is displayed, otherwise a notification is displayed.</p>
+</aside>
+<aside class="warning"><p>The camerastreaming module still requires the embedder application to manually ask for the camera and record audio permission prior to creating a session.</p>
+</aside>
+<h2><img style="max-width: 282.45px" src="img/9819102bcdc0f0ae.png"></h2>
+<h2>Customizing the permission notifications</h2>
+<p>The notification that is displayed by the SDK can be fully customized. To set up a customized notification, use the following code block:</p>
+<pre><code>RescueSDK.customizePermissionNotification(new NotificationCustomizer() {
+   @Override
+   public void onCreateNotification(CustomizedNotificationBuilder builder) {
+      // Optional: Set the activity to be instantiated
+       // when the user clicks the notification
+      builder.setActivityToBeStarted(MainActivity.class);
+   }
+});</code></pre>
+<aside class="warning"><p>Consider setting the activity <a href="https://developer.android.com/guide/topics/manifest/activity-element.html#lmode" target="_blank"><em>android:launchMode=singleTask</em></a> that is given to the <code>setActivityToBeStarted</code> method.</p>
+<p>This way, the same activity instance is started that was previously running, instead of deploying a new instance.</p>
+</aside>
+<p>The <code>CustomizedNotificationBuilder</code> class is a subclass of the <code>Notification.Builder</code> class from the android framework, and acts as such. However, setting the ContentIntent of this builder will have no effect, because the SDK will overwrite that, in order to guarantee normal operation of the permission consent dialogs.</p>
+<p>The notification has a certain timeout, and is removed automatically when that time is over.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Obfuscation" duration="0">
+        <p>The SDK comes with a set of consumer proguard files, which are automatically picked up by the gradle build system. This means that there is no need for additional configuration when obfuscating the embedder app.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Shared preferences" duration="0">
+        <p>The SDK may store session-related information using shared preferences. All preferences are stored using the <code>com.logmein.rescuesdk</code> prefix. In order to use the full SDK functionality, the embedder application should not interfere with these values.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Example app" duration="0">
+        <p>We provide an example app along with the SDK, that demonstrates the features of the SDK.</p>
+<h3>Clone the example repository from GitHub</h3>
+<pre>$ git clone git@github.com:LogmeinRescue/Android-SDK-DemoApp.git</pre>
+<h3>...or download the repo as a Zip file</h3>
+<p><a href="https://github.com/LogmeinRescue/Android-SDK-DemoApp/archive/master.zip" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download Zip</paper-button></a></p>
+<p>The example app should run out-of-the-box, but you must enter a Channel ID and an API key manually when connecting to a session.</p>
+<p>You can configure the Channel ID using the <em>Config</em> class corresponding field.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Debugging" duration="0">
+        <h2>Logging strategy</h2>
+<p>Our SDK uses the SLF4J library for logging purposes. By default, no implementation is bound, so the library does not log any messages.</p>
+<p>In order to receive log messages from the SDK, the embedder app must define an SLF4J implementation at compile time.</p>
+<p>The reference implementation of the SLF4J library for Android is available <a href="http://www.slf4j.org/android/" target="_blank">here</a>. </p>
+<p>To bind it, add this line to the build.gradle file of the application:</p>
+<pre><code>compile &#39;org.slf4j:slf4j-android:1.7.12&#39;</code></pre>
+<p>After an implementation is bound, you receive log messages through the logger interface with <strong><em>Rescue-SDK</em></strong> prefix.</p>
+<p>By default, this implementation ignores DEBUG and VERBOSE level log messages. You can change the default level by setting a system property: </p>
+<pre>adb shell setprop log.tag.Rescue-SDK &lt;LEVEL&gt;</pre>
+<p>Where level is either VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, or SUPPRESS. SUPPRESS turns off all logging for the SDK tag.</p>
+<h2>Handling error cases</h2>
+<p>When the SDK encounters an unrecoverable error during its execution, it dispatches an instance of <code>ErrorEvent</code>. </p>
+<p>In order to further identify the cause of the error, it is possible for the embedder application to subscribe to subclasses of these events:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Meaning</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ApiKeyAndPackageNameNotFromTheSameCompanyEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The given api key and package name is not associated with the target company.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ApiKeyDisabledEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The api key is disabled according to the Rescue system.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ApiKeyDoesNotExistEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The api key does not exist</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ExpiredPinCodeEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the given PIN code for a private session is expired.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>InvalidPinCodeEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the given PIN code for a private session is not valid.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>NoSuchChannelEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>No Channel can be found with the defined parameters. It may have been deleted, or renamed</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>NoSuchCompanyEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The given companyId is not associated with any company.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>NoTechnicianAvailableEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>No technician is available on the selected Channel</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ChannelAndApiKeyNotFromTheSameCompanyEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The given API key is not associated with the company that this Channel belongs to.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>PinCodeAndApiKeyNotFromTheSameCompanyEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the given PIN code for a private session was not generated with the account that holds the API key used to initialize the SDK.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ApiKeyMissingEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the LogMeIn Rescue website did not receive the APIkey.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>PackageNameMissingEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the LogMeIn Rescue website did not receive the package name.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>UnsupportedVersionEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>Indicates that the used protocol version is not supported by the Rescue infrastructure any more.</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Migration from 2.x versions to 3.x versions" duration="0">
+        <h3>Compile the right dependencies</h3>
+<ul>
+<li>The SDK was further split into separate modules</li>
+<li>core - session connectivity and chat</li>
+<li>displaystreaming - deprecated, replaced by appscreenstreaming</li>
+<li>appscreenstreaming - in-app screenshare</li>
+<li>devicescreenstreaming - systemwide screenshare</li>
+<li>camerastreaming - camera sharing</li>
+<li>audiostreaming - VoIP during camera sharing sessions</li>
+<li>deviceinfo - detailed device information</li>
+<li>When using the 3.0.0 version, you must choose between camera/appscreen/devicescreen streaming</li>
+</ul>
+<h3>Follow API changes</h3>
+<ul>
+<li>You must call <code>RescueSDK.initializeLifecycleReporter()</code> in your application&#39;s <code>onCreate()</code> method</li>
+<li>The <code>com.logmein.rescuesdk.api.deviceinfo</code> package has been moved to the deviceinfo module</li>
+<li>Handle <code>UnsupportedVersionEvent</code> during session connection</li>
+<li><code>RescueSDK.customizePermissionNotification()</code> added</li>
+<li>The audio streaming functionality has been added to the camerastreaming module in a separate module.</li>
+<li><code>DisplayStreamingExtension</code> is now Deprecated in favor of <code>AppScreenStreamingExtension</code></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Migration from 1.x versions to 2.x versions" duration="0">
+        <h3>Compile the right dependencies</h3>
+<ul>
+<li>The SDK was split into separate modules</li>
+<li>core - session connectivity and chat</li>
+<li>displaystreaming - display sharing</li>
+<li>camerastreaming - camera sharing</li>
+<li>When using the 2.0.0 version, you must choose between camera/display streaming</li>
+</ul>
+<h3>Follow API changes</h3>
+<ul>
+<li>Tell the session factory to use the selected extension when creating the session</li>
+<li><code>SessionFactory.useExtension(DisplayStreamingExtension.class);</code> or</li>
+<li><code>SessionFactory.useExtension(CameraStreamingExtension.class);</code> </li>
+<li>Everything under <code>com.logmein.rescuesdk.api.remoteview</code> has been moved to <code>com.logmein.rescuesdk.api.streaming</code></li>
+<li>The <code>com.logmein.rescuesdk.api.streaming</code> package has been moved from the core module into the <em>displaystreaming</em> and <em>camerastreaming</em> module</li>
+<li>Producer  is no longer an interface, but a class. Use the forClass method to create instances for specific event types.</li>
+<li>The following classes were renamed:</li>
+<li>ChatConnectionEvent -&gt; ChatConnectionStateEvent</li>
+<li>ConnectionEvent -&gt; ConnectionStateEvent</li>
+<li>RemoteViewEvent -&gt; StreamingEvent</li>
+<li>RemoteViewStartedEvent -&gt; StreamingStartedEvent</li>
+<li>RemoteViewStoppedEvent -&gt; StreamingStoppedEvent</li>
+<li>RemoteDisplayViewStartedEvent -&gt; DisplayStreamingStartedEvent</li>
+<li>RemoteDisplayViewStoppedEvent -&gt; DisplayStreamingStoppedEvent</li>
+<li>RemoteViewClient -&gt; StreamingClient</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Troubleshooting" duration="0">
+        <table>
+<tr><td colspan="1" rowspan="1"><p><strong>Issue</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Solution</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>The keyboard is not displayed in Display View in  the Technician Console (in case of using appscreenstreaming module)</p>
+</td><td colspan="1" rowspan="1"><p>System UI components cannot be captured, therefore, are not visible in the TC.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>UnsupportedOperationException</code> thrown</p>
+</td><td colspan="1" rowspan="1"><p>Ensure that you call <code>RescueSDK.initializeLifecycleReporter(app)</code> in your app&#39;s <code>onCreate()</code> method.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RuntimeException</code> with message:</p>
+<p>&#34;Unable to create Rescue session&#34;</p>
+</td><td colspan="1" rowspan="1"><p>You have likely added incompatibile modules to your sessionFactory. Please ensure that there are only compatible modules added.</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-49880327-14', 'auto');
+
+    (function() {
+      var gaCodelab = '';
+      if (gaCodelab) {
+        ga('create', gaCodelab, 'auto', {name: 'codelab'});
+      }
+
+      var gaView;
+      var parts = location.search.substring(1).split('&');
+      for (var i = 0; i < parts.length; i++) {
+        var param = parts[i].split('=');
+        if (param[0] === 'viewga') {
+          gaView = param[1];
+          break;
+        }
+      }
+      if (gaView && gaView !== gaCodelab) {
+        ga('create', gaView, 'auto', {name: 'view'});
+      }
+    })();
+  </script>
+
+</body>
+</html>
