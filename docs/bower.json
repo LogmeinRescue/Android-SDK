@@ -1,0 +1,11 @@
+{
+  "name": "claat-preview-server",
+  "version": "1.0.0",
+  "license": "Apache 2",
+  "private": true,
+  "dependencies": {
+ 
+    "google-codelab-elements": "googlecodelabs/codelab-components#^1.0.2",
+    "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1"
+  }
+}

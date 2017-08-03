@@ -1,0 +1,19 @@
+{
+  "environment": "web",
+  "source": "1NCNdKdxANPm2qUJM4IaLY-q6TVreimBv8DUBcoH_3Xc",
+  "format": "html",
+  "mainga": "UA-49880327-14",
+  "updated": "2017-08-03T09:55:49Z",
+  "id": "docs",
+  "duration": 0,
+  "title": "Rescue In-App Android SDK",
+  "summary": "In this codelab, you'll learn how to integrate the Rescue In-App Support Android SDK into and android app",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": null,
+  "tags": [],
+  "feedback": "https://github.com/LogmeinRescue/Android-SDK/issues",
+  "url": "docs"
+}
