@@ -7,12 +7,13 @@
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
   <title>Rescue In-App Android SDK</title>
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="elements/codelab.html">
+  <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="./elements/codelab.html">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
-  <style>
+  <style is="custom-style">
     body {
       font-family: "Roboto",sans-serif;
+      background: var(--google-codelab-background, --paper-grey-300);
     }
   </style>
   
@@ -110,10 +111,10 @@
 }
 ...
 dependencies {
-   compile (&#39;com.logmein.rescuesdk:resources:2.0.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.2.3@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   compile (&#39;com.logmein.rescuesdk:core:2.0.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.2.3@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -281,7 +282,7 @@ bus.add(yourHandler);</code></pre>
     
       <google-codelab-step label="Session lifecycle" duration="0">
         <p>The Session goes through different states during its life cycle. After a session is initiated from your application, it connects to LogMeIn servers and appears in the session queue of those technicians that are assigned to the channel with which the session was created.</p>
-<p><img style="max-width: 508.04px" src="img/e5150f923fa60e71.png"></p>
+<p><img style="max-width: 508.04px" src="img/f41972c27bbd4510.png"></p>
 <p>When the Session&#39;s state changes, the SDK publishes an event from the following hierarchy of event classes in the <em>com.logmein.rescuesdk.api.session.event </em>package.</p>
 <table>
 <tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
@@ -410,7 +411,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   compile (&#39;com.logmein.rescuesdk:appscreenstreaming:3.0.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.0.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -423,7 +424,7 @@ sessionFactory.create(...);</code></pre>
 <p>The screen sharing may start automatically depending on settings on the technician&#39;s side. If the embedder application stops screen sharing, it can be restarted by the technician at any time during the session.</p>
 <p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side.</p>
 <p>The embedder application can receive updates about the current status of screen sharing by subscribing to the related events. Consider the following class hierarchy:</p>
-<p><img style="max-width: 624.00px" src="img/73aff0b63eb3d98f.png"></p>
+<p><img style="max-width: 624.00px" src="img/6e1b72c7e440ebc.png"></p>
 <table>
 <tr><td colspan="1" rowspan="1"><p>Event</p>
 </td><td colspan="1" rowspan="1"><p>Description</p>
@@ -459,7 +460,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   compile (&#39;com.logmein.rescuesdk:devicescreenstreaming:3.0.0@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.2.3@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -480,7 +481,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   compile (&#39;com.logmein.rescuesdk:camerastreaming:3.0.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.2.3@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -515,7 +516,7 @@ extension.startRendering(cameraStreamView);</code></pre>
 <p>If you enabled camera streaming when creating a <code>Session</code>, the stream starts automatically when the Session is connected to a technician. (regardless of whether you implemented rendering in your app) </p>
 <p>When the application is not in the foreground, the camera image is not sent to the technician.</p>
 <p>The embedder application can receive updates about the current status of the camera stream, by subscribing to related events:</p>
-<p><img style="max-width: 624.00px" src="img/386943172ee6f51a.png"></p>
+<p><img style="max-width: 624.00px" src="img/e0b709d32ac554f0.png"></p>
 <table>
 <tr><td colspan="1" rowspan="1"><p><strong>Event</strong></p>
 </td><td colspan="1" rowspan="1"><p><strong>Description</strong></p>
@@ -682,7 +683,7 @@ extension.unmuteRecording();</code></pre>
 <p>In order to receive log messages from the SDK, the embedder app must define an SLF4J implementation at compile time.</p>
 <p>The reference implementation of the SLF4J library for Android is available <a href="http://www.slf4j.org/android/" target="_blank">here</a>. </p>
 <p>To bind it, add this line to the build.gradle file of the application:</p>
-<pre><code>compile &#39;org.slf4j:slf4j-android:1.7.12&#39;</code></pre>
+<pre><code>implementation &#39;org.slf4j:slf4j-android:1.7.12&#39;</code></pre>
 <p>After an implementation is bound, you receive log messages through the logger interface with <strong><em>Rescue-SDK</em></strong> prefix.</p>
 <p>By default, this implementation ignores DEBUG and VERBOSE level log messages. You can change the default level by setting a system property: </p>
 <pre>adb shell setprop log.tag.Rescue-SDK &lt;LEVEL&gt;</pre>
@@ -734,6 +735,16 @@ extension.unmuteRecording();</code></pre>
 </td><td colspan="1" rowspan="1"><p>Indicates that the used protocol version is not supported by the Rescue infrastructure any more.</p>
 </td></tr>
 </table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Migration to version 3.2.3" duration="0">
+        <ul>
+<li>Update your project to use the android plugin 3.0.0+ and gradle 4.0+</li>
+<li>Use the TechnicianTypingStoppedEvent that indicates that the technician is no longer typing a message</li>
+<li>Handle ChatConnectedEvent/ChatDisconnectedEvent to support those sessions which does not have chat enabled</li>
+</ul>
 
 
       </google-codelab-step>
