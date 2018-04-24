@@ -6,4 +6,4 @@ For integration instructions, please visit [this codelab](https://logmeinrescue.
 We also have [sample apps](https://github.com/LogmeinRescue/Android-SDK-DemoApp), to demonstrate the functionality.
 
 # Feedback
- If you found a bug, or if you are missing a feature [please file an issue](https://github.com/LogmeinRescue/Android-SDK/issues).
+ If you found a bug, or if you are missing a feature [please file an issue](https://github.com/LogmeinRescue/Android-SDK/issues).d
