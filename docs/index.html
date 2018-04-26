@@ -13,7 +13,7 @@
   <style is="custom-style">
     body {
       font-family: "Roboto",sans-serif;
-      background: var(--google-codelab-background, --paper-grey-300);
+      background: var(--google-codelab-background, #F8F9FA);
     }
   </style>
   
@@ -40,7 +40,7 @@
 <ul>
 <li>Retrieve device information</li>
 <li>Chat with the end-user</li>
-<li>Send an URL</li>
+<li>Send a URL</li>
 <li>See the app&#39;s screen (depending on configuration)</li>
 <li>See video stream from the user&#39;s camera (depending on configuration)</li>
 <li>Annotate the app&#39;s screen</li>
@@ -59,12 +59,24 @@
 <p>If your application is running on earlier versions of android, please be aware that the <code>SessionFactory.newInstance()</code><em> </em>method will throw an Exception, therefore a session cannot be instantiated. Before enabling an element related to Rescue support session, you should check the platform on which your application is running. </p>
 <pre><code>private void setUpRescueSessionStartButton() {
     // Make sure we&#39;re running on supported Android platform to use Rescue SDK APIs
-    if (Build.VERSION.SDK_INT &gt;= RescueSDK.getMinimumSupportedAndroidApiLevel()) {
+    if (Build.VERSION.SDK_INT &gt;= RescueSDK.getMinSupportedAndroidApiLevel()) {
         // Setup Rescue related UI components
     }
 }</code></pre>
 <h3>Module specific API level requirements</h3>
 <p>The minimum API level for the device screen streaming module is API 21.</p>
+<h2>Java 8</h2>
+<p>The SDK is extensively use Java 8 language features that implies the followings:</p>
+<ul>
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank">JDK 8</a> is required for compiling the embedder app</li>
+<li>You should configure your project for supporting Java 8 features. Add the following lines to the corresponding gradle file: (<a href="https://developer.android.com/studio/write/java8-support.html" target="_blank">official documentation</a>) </li>
+</ul>
+<pre><code>android {
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}</code></pre>
 <h2>Software requirement for development</h2>
 <p>The SDK is designed to be used with <strong>Android Studio</strong>, the currently official IDE for developing native Android applications. </p>
 
@@ -313,7 +325,7 @@ bus.add(yourHandler);</code></pre>
 </td><td colspan="1" rowspan="1"><p>The application user started to close the session.</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><code>DisconnectedEvent</code></p>
-</td><td colspan="1" rowspan="1"><p>The closing of the session is finished.Tthis is the last status change event related to this session. No more interaction is possible with the session.</p>
+</td><td colspan="1" rowspan="1"><p>The closing of the session is finished. This is the last status change event related to this session. No more interaction is possible with the session.</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><code>ReconnectingFailedEvent</code></p>
 </td><td colspan="1" rowspan="1"><p>The session has been closed because it failed to reconnect to the Technician Console for too long.</p>
@@ -377,7 +389,7 @@ bus.add(yourHandler);</code></pre>
 <p>To receive messages from the technician, the client app has to register a handler of <code>RemoteChatMessageEvent</code>.</p>
 <pre><code>public class YourHandler {
     @Subscribe
-    public void onRemoteChatMessage(RemoteChatMessage event) {
+    public void onRemoteChatMessage(RemoteChatMessageEvent event) {
         StringBuilder messageBuilder = new StringBuilder();
         Date date = new Date(event.getTime());
         String timeOfArrival = SimpleDataFormat(&#34;HH:mm:ss&#34;).format(date);
@@ -456,7 +468,7 @@ sessionFactory.create(...);</code></pre>
 <p>It provides the same functionality as the app screen streaming, including whiteboarding, laserpointer, start/stop events and such.</p>
 <p>When the technician wants to start a remote viewing session, and the app is in foreground, then the following dialog is displayed to the user.</p>
 <p>If the user consents to this dialog, then the remote viewing will starts right away.</p>
-<p><img style="max-width: 286.34px" src="img/9819102bcdc0f0ae.png"></p>
+<p><img alt="foo.gif" style="max-width: 286.34px" src="img/9819102bcdc0f0ae.png"></p>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
@@ -506,6 +518,10 @@ sessionFactory.create(...);</code></pre>
 <pre><code>CameraStreamView cameraStreamView = (CameraStreamView) findViewById(R.id.camera_stream_view);
 extension.startRendering(cameraStreamView);</code></pre>
 <aside class="special"><p>Rendering to a <code>CameraStreamView</code> works even if the Session is not connected to a technician.</p>
+</aside>
+<aside class="warning"><p><strong>Notes on extension lifecycle</strong></p>
+<p>Before you call <code>startRendering()</code> ensure to call <code>stopRendering()</code> on all (if any) previously allocated instances of extensions. </p>
+<p>An extension belongs to a certain session instance, so please ensure not to reuse extension instances between sessions.</p>
 </aside>
 <aside class="warning"><p><strong>Handling when camera is not available</strong></p>
 <p>It is possible that, for some reason, the camera of the device is inaccessible (for example, other apps using the camera did not release it)</p>
@@ -633,7 +649,7 @@ extension.unmuteRecording();</code></pre>
 </aside>
 <aside class="warning"><p>The camerastreaming module still requires the embedder application to manually ask for the camera and record audio permission prior to creating a session.</p>
 </aside>
-<h2><img style="max-width: 282.45px" src="img/9819102bcdc0f0ae.png"></h2>
+<h2><img alt="foo.gif" style="max-width: 282.45px" src="img/9819102bcdc0f0ae.png"></h2>
 <h2>Customizing the permission notifications</h2>
 <p>The notification that is displayed by the SDK can be fully customized. To set up a customized notification, use the following code block:</p>
 <pre><code>RescueSDK.customizePermissionNotification(new NotificationCustomizer() {
