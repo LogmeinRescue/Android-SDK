@@ -433,7 +433,11 @@ bus.add(yourHandler);</code></pre>
 sessionFactory.useExtension(AppScreenStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
 <p>The screen sharing may start automatically depending on settings on the technician&#39;s side. If the embedder application stops screen sharing, it can be restarted by the technician at any time during the session.</p>
-<aside class="special"><p>Please use <code>DeviceInfoExtension</> to see App/Device Screen in the Technician Console or turn on Classic display feature in the Administration Center.</p>
+<aside class="special"><p>To let technicians see App/Device Screen in the Technician Console do either of the following:</p>
+<ul>
+<li>Use DeviceInfoExtension</li>
+<li>In the Administration Center, turn on Classic display feature</li>
+</ul>
 </aside>
 <p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side.</p>
 <p>The embedder application can receive updates about the current status of screen sharing by subscribing to the related events. Consider the following class hierarchy:</p>
@@ -483,7 +487,12 @@ sessionFactory.create(...);</code></pre>
 <pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
 sessionFactory.useExtension(DeviceScreenStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
-<aside class="warning"><p>You can only use one <code>Extension</code> at a time from these 3 extension: camera/appscreen/devicescreen</p>
+<aside class="warning"><p>Use only one of the following extensions at a time:</p>
+<ul>
+<li><code>DeviceScreenStreamingExtension</code></li>
+<li><code>AppScreenStreamingExtension</code></li>
+<li><code>CameraStreamingExtension</code></li>
+</ul>
 </aside>
 
       </google-codelab-step>
@@ -778,7 +787,7 @@ extension.unmuteRecording();</code></pre>
 <li>camerastreaming - camera sharing</li>
 <li>audiostreaming - VoIP during camera sharing sessions</li>
 <li>deviceinfo - detailed device information</li>
-<li>When using the 3.0.0 version, you must choose between camera/appscreen/devicescreen streaming otherwise exception will be thrown</li>
+<li>When using the 3.0.0 version, you must choose between camera/appscreen/devicescreen streaming otherwise <code>UnsupportedOperationException</code> will be thrown</li>
 </ul>
 <h3>Follow API changes</h3>
 <ul>
