@@ -391,7 +391,7 @@ bus.add(yourHandler);</code></pre>
     public void onRemoteChatMessage(RemoteChatMessageEvent event) {
         StringBuilder messageBuilder = new StringBuilder();
         Date date = new Date(event.getTime());
-        String timeOfArrival = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date);
+        String timeOfArrival = new SimpleDateFormat(&#34;HH:mm:ss&#34;, Locale.getDefault()).format(date);
         messageBuilder.append(&#34;[&#34;).append(timeOfArrival).append(&#34;]&#34;);
         messageBuilder.append(&#34;-&#34;).append(event.getMessage());
         Log.d(&#34;SDK&#34;, messageBuilder.toString());
