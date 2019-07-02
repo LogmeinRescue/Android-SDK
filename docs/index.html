@@ -48,6 +48,29 @@
 <aside class="warning"><p>When using the In-App Support SDK with your app, memory and CPU utilization, power consumption as well as network data usage may increase.</p>
 </aside>
 
+	</google-codelab-step>
+    
+      <google-codelab-step label="Add the SDK as a dependency" duration="0">
+        <p>Define the location of the SDK maven repository as well as the dependencies by adding the following lines to the build.gradle file of your application module:</p>
+<pre><code>repositories {
+   maven {
+       url &#39;https://raw.githubusercontent.com/logmeinrescue/android-sdk/master/maven/repository&#39;
+   }
+}
+...
+dependencies {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.4.0@aar&#39;) {
+      transitive = false // avoid resources dependencies
+   }
+   implementation(&#39;com.logmein.rescuesdk:core:3.4.0@aar&#39;) {
+      transitive = true 
+   }     
+   // other SDK modules that your app requires
+}</code></pre>
+
+
+      </google-codelab-step>
+
 
       </google-codelab-step>
     
@@ -110,30 +133,6 @@
 <p>Contains translations for the following languages: en, ar, bg, cs, da, de, el, es, es-rAR, et, fa, fi, fr, hr, hu, in, it, iw, ja, ko, lt, lv, my, nb, nl, no, pl, pt, pt-rBR, ro, ru, sk, sl, sr, sv, th, tr, uk, vi, zh, zh-rCN</p>
 </td></tr>
 </table>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Add the SDK as a dependency" duration="0">
-        <p>Define the location of the SDK maven repository as well as the dependencies by adding the following lines to the build.gradle file of your application module:</p>
-<pre><code>repositories {
-   maven {
-       url &#39;https://raw.githubusercontent.com/logmeinrescue/android-sdk/master/maven/repository&#39;
-   }
-}
-...
-dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.2.3@aar&#39;) {
-      transitive = false // avoid resources dependencies
-   }
-   implementation(&#39;com.logmein.rescuesdk:core:3.2.3@aar&#39;) {
-      transitive = true 
-   }     
-   // other SDK modules that your app requires
-}</code></pre>
-
-
-      </google-codelab-step>
     
       <google-codelab-step label="Configure application settings" duration="0">
         <h3>Registering app lifecycle reporter</h3>
@@ -392,7 +391,7 @@ bus.add(yourHandler);</code></pre>
     public void onRemoteChatMessage(RemoteChatMessageEvent event) {
         StringBuilder messageBuilder = new StringBuilder();
         Date date = new Date(event.getTime());
-        String timeOfArrival = SimpleDataFormat(&#34;HH:mm:ss&#34;).format(date);
+        String timeOfArrival = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date);
         messageBuilder.append(&#34;[&#34;).append(timeOfArrival).append(&#34;]&#34;);
         messageBuilder.append(&#34;-&#34;).append(event.getMessage());
         Log.d(&#34;SDK&#34;, messageBuilder.toString());
@@ -423,7 +422,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.0.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -434,6 +433,8 @@ bus.add(yourHandler);</code></pre>
 sessionFactory.useExtension(AppScreenStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
 <p>The screen sharing may start automatically depending on settings on the technician&#39;s side. If the embedder application stops screen sharing, it can be restarted by the technician at any time during the session.</p>
+<aside class="special"><p>Please use <code>DeviceInfoExtension</> to see App/Device Screen in the Technician Console or turn on Classic display feature in the Administration Center.</p>
+</aside>
 <p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side.</p>
 <p>The embedder application can receive updates about the current status of screen sharing by subscribing to the related events. Consider the following class hierarchy:</p>
 <p><img style="max-width: 624.00px" src="img/6e1b72c7e440ebc.png"></p>
@@ -472,7 +473,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.2.3@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -482,18 +483,19 @@ sessionFactory.create(...);</code></pre>
 <pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
 sessionFactory.useExtension(DeviceScreenStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
-
+<aside class="warning"><p>You can only use one <code>Extension</code> at a time from these 3 extension: camera/appscreen/devicescreen</p>
+</aside>
 
       </google-codelab-step>
     
       <google-codelab-step label="Camera sharing" duration="0">
         <p>The SDK can be used to stream the camera image of the device to the Technician Console. This way the technician can see what the user sees through the camera of the device.</p>
-<p>You can enable camera streaming in the SDK with the following steps.</p>
+<p>You can enable camera streaming in the SDK with the following steps. Please check the <strong>Permission Handling</strong> step to avoid difficulties.</p>
 <p>Declare the camerastreaming library in your dependencies section:</p>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.2.3@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -776,7 +778,7 @@ extension.unmuteRecording();</code></pre>
 <li>camerastreaming - camera sharing</li>
 <li>audiostreaming - VoIP during camera sharing sessions</li>
 <li>deviceinfo - detailed device information</li>
-<li>When using the 3.0.0 version, you must choose between camera/appscreen/devicescreen streaming</li>
+<li>When using the 3.0.0 version, you must choose between camera/appscreen/devicescreen streaming otherwise exception will be thrown</li>
 </ul>
 <h3>Follow API changes</h3>
 <ul>
