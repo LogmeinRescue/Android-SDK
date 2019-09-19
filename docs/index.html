@@ -59,10 +59,10 @@
 }
 ...
 dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.4.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.4.2@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   implementation(&#39;com.logmein.rescuesdk:core:3.4.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.4.2@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -421,7 +421,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.2@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -472,11 +472,17 @@ sessionFactory.create(...);</code></pre>
 <p>It provides the same functionality as the app screen streaming, including whiteboarding, laserpointer, start/stop events and such.</p>
 <p>When the technician wants to start a remote viewing session, and the app is in foreground, then the following dialog is displayed to the user.</p>
 <p>If the user consents to this dialog, then the remote viewing will starts right away.</p>
+<aside class="special"><p>To let technicians see App/Device Screen in the Technician Console do either of the following:</p>
+<ul>
+<li>Use DeviceInfoExtension</li>
+<li>In the Administration Center, turn on Classic display feature</li>
+</ul>
+</aside>
 <p><img alt="foo.gif" style="max-width: 286.34px" src="img/9819102bcdc0f0ae.png"></p>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.0@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.2@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -503,7 +509,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.2@aar&#39;) {
       transitive = true 
    }     
    ...     
