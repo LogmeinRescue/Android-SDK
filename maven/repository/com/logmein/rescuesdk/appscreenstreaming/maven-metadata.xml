@@ -3,10 +3,10 @@
   <groupId>com.logmein.rescuesdk</groupId>
   <artifactId>appscreenstreaming</artifactId>
   <versioning>
-    <release>3.4.2</release>
+    <release>3.4.3-LOCALDEV</release>
     <versions>
-      <version>3.4.2</version>
+      <version>3.4.3-LOCALDEV</version>
     </versions>
-    <lastUpdated>20190909133923</lastUpdated>
+    <lastUpdated>20191210122051</lastUpdated>
   </versioning>
 </metadata>
