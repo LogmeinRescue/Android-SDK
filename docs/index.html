@@ -59,10 +59,10 @@
 }
 ...
 dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.4.2@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.4.4@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   implementation(&#39;com.logmein.rescuesdk:core:3.4.2@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.4.4@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -421,7 +421,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.2@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.4@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -482,7 +482,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.2@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.4@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -499,6 +499,25 @@ sessionFactory.create(...);</code></pre>
 <li><code>CameraStreamingExtension</code></li>
 </ul>
 </aside>
+<p><strong>MediaProjection</strong></p>
+<p>The SDK uses <a href="https://developer.android.com/reference/android/media/projection/MediaProjection">MediaProjectiont</a> API to capture screen contents.</p>
+<p>Becasuse of this if you set <code>targetSdkVersion</code> to 29 or greater then you have to implement your own <code>Service</code> class and run as foreground service.</p>
+<p>Inside your AndroidManifest.xml:</p>
+<pre><code>&lt;uses-permission android:name=&#34;android.permission.FOREGROUND_SERVICE&#34; /&gt;
+
+&lt;application&gt;
+
+	&lt;service
+		android:name=&#34;YourOwnService&#34;
+		android:exported=&#34;false&#34;
+		android:foregroundServiceType=&#34;mediaProjection&#34; /&gt;
+&lt;/application&gt;</code></pre>
+<p>The session creation needs to be done inside your Service class implementation. Before this you have to call the <code>startForeground()</code> method.</p>
+<pre><code>startForeground(YOUR_NOTIFICATION_ID, notification);
+
+SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(DeviceScreenStreamingExtension.class);
+sessionFactory.create(...);</code></pre>
 
       </google-codelab-step>
     
@@ -509,7 +528,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.2@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.4@aar&#39;) {
       transitive = true 
    }     
    ...     
