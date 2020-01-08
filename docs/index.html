@@ -500,8 +500,8 @@ sessionFactory.create(...);</code></pre>
 </ul>
 </aside>
 <p><strong>MediaProjection</strong></p>
-<p>The SDK uses <a href="https://developer.android.com/reference/android/media/projection/MediaProjection">MediaProjectiont</a> API to capture screen contents.</p>
-<p>Becasuse of this if you set <code>targetSdkVersion</code> to 29 or greater then you have to implement your own <code>Service</code> class and run as foreground service.</p>
+<p>The SDK uses <a href="https://developer.android.com/reference/android/media/projection/MediaProjection">MediaProjection</a> API to capture screen contents.</p>
+<p>Because of this if you set <code>targetSdkVersion</code> to 29 or greater then you have to implement your own <code>Service</code> class and run as foreground service.</p>
 <p>Inside your AndroidManifest.xml:</p>
 <pre><code>&lt;uses-permission android:name=&#34;android.permission.FOREGROUND_SERVICE&#34; /&gt;
 
