@@ -491,7 +491,25 @@ sessionFactory.create(...);</code></pre>
 </aside>
 
 <p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side so it cannot be controlled.</p>
-	 
+<table>
+<tr><td colspan="1" rowspan="1"><p>Event</p>
+</td><td colspan="1" rowspan="1"><p>Description</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RemoteDisplayControlStartedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application control is available for the technician</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RemoteDisplayControlStoppedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application control is no longer available for the technician</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RemoteDisplayControlPausedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application control has been paused</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>RemoteDisplayControlResumedEvent</code></p>
+</td><td colspan="1" rowspan="1"><p>The application control has been resumed</p>
+</td></tr>
+</table>
+<p>The embedding application can obtain an instance of <code>StreamingClient</code> from an instance of <code>RemoteDisplayControlStartedEvent</code>.</p>
+
 	  </google-codelab-step>
     
       <google-codelab-step label="Device screen sharing (API21&#43;)" duration="0">
