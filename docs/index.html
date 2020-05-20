@@ -59,10 +59,10 @@
 }
 ...
 dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.4.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.5.0@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   implementation(&#39;com.logmein.rescuesdk:core:3.4.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.5.0@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -421,7 +421,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.4.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.5.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -466,6 +466,33 @@ sessionFactory.create(...);</code></pre>
 
 
       </google-codelab-step>
+	  
+	  <google-codelab-step label="App screen control" duration="0">
+		<p>When a session is established using the Rescue SDK, the contents of the embedder application&#39;s root view can be remotely controlled by the technician. </p>
+<p><strong>build.gradle (App)</strong></p>
+<pre><code>dependencies {
+   ...
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.5.0@aar&#39;) {
+      transitive = true 
+   }     
+   ...     
+}</code></pre>
+<p>Before creating a <code>Session</code>, tell the <code>SessionFactory</code> that it should use <code>AppScreenControlExtension</code>.</p>
+<p><strong>Activity.java (snippet)</strong></p>
+<pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
+sessionFactory.useExtension(AppScreenControlExtension.class);
+sessionFactory.create(...);</code></pre>
+
+<aside class="special"><p>To let technicians see App/Device Screen in the Technician Console do either of the following:</p>
+<ul>
+<li>Use DeviceInfoExtension</li>
+<li>In the Administration Center, turn on Classic display feature</li>
+</ul>
+</aside>
+
+<p>When the application is not in the foreground, the device view is not updated on the technician&#39;s side so it cannot be controlled.</p>
+	 
+	  </google-codelab-step>
     
       <google-codelab-step label="Device screen sharing (API21&#43;)" duration="0">
         <p>Device screen sharing enables the technician to see everything (except secure windows) on the screen of the user&#39;s device. </p>
@@ -482,7 +509,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.4.4@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.5.0@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -528,7 +555,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.4.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.5.0@aar&#39;) {
       transitive = true 
    }     
    ...     
