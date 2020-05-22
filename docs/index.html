@@ -431,6 +431,16 @@ bus.add(yourHandler);</code></pre>
 <pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
 sessionFactory.useExtension(AppScreenStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
+
+<aside class="warning"><p>Use only one of the following extensions at a time:</p>
+<ul>
+<li><code>DeviceScreenStreamingExtension</code></li>
+<li><code>AppScreenStreamingExtension</code></li>
+<li><code>AppScreenControlExtension</code></li>
+<li><code>CameraStreamingExtension</code></li>
+</ul>
+</aside>
+
 <p>The screen sharing may start automatically depending on settings on the technician&#39;s side. If the embedder application stops screen sharing, it can be restarted by the technician at any time during the session.</p>
 <aside class="special"><p>To let technicians see App/Device Screen in the Technician Console do either of the following:</p>
 <ul>
@@ -482,6 +492,15 @@ sessionFactory.create(...);</code></pre>
 <pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
 sessionFactory.useExtension(AppScreenControlExtension.class);
 sessionFactory.create(...);</code></pre>
+
+<aside class="warning"><p>Use only one of the following extensions at a time:</p>
+<ul>
+<li><code>DeviceScreenStreamingExtension</code></li>
+<li><code>AppScreenStreamingExtension</code></li>
+<li><code>AppScreenControlExtension</code></li>
+<li><code>CameraStreamingExtension</code></li>
+</ul>
+</aside>
 
 <aside class="special"><p>To let technicians see App/Device Screen in the Technician Console do either of the following:</p>
 <ul>
@@ -541,6 +560,7 @@ sessionFactory.create(...);</code></pre>
 <ul>
 <li><code>DeviceScreenStreamingExtension</code></li>
 <li><code>AppScreenStreamingExtension</code></li>
+<li><code>AppScreenControlExtension</code></li>
 <li><code>CameraStreamingExtension</code></li>
 </ul>
 </aside>
@@ -583,6 +603,14 @@ sessionFactory.create(...);</code></pre>
 <pre><code>SessionFactory sessionFactory = SessionFactory.newInstance();
 sessionFactory.useExtension(CameraStreamingExtension.class);
 sessionFactory.create(...);</code></pre>
+<aside class="warning"><p>Use only one of the following extensions at a time:</p>
+<ul>
+<li><code>DeviceScreenStreamingExtension</code></li>
+<li><code>AppScreenStreamingExtension</code></li>
+<li><code>AppScreenControlExtension</code></li>
+<li><code>CameraStreamingExtension</code></li>
+</ul>
+</aside>
 <p>After the session is passed back to your app in the <code>onSessionCreated</code> callback, you can obtain the camera streaming extension.</p>
 <p><strong>Activity.java (snippet)</strong></p>
 <pre><code>CameraStreamingExtension extension = rescueSession.getExtension(CameraStreamingExtension.class);</code></pre>
