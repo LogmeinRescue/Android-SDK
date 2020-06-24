@@ -212,6 +212,7 @@ factory.create(getApplicationContext(), apiKey, callback);</code></pre>
 <li>Callback - the callback to be invoked when the session instance is created</li>
 </ul>
 <p>Note that the <code>SessionFactory.create(...)</code> call is asynchronous. It creates a session object in a background thread, and invokes the supplied <em>callback</em> once the instance is created. The callback is invoked in the main thread.</p>
+<p>By calling <code>SessionConfig.setCustomerName(String name)</code>, you let the Technician to see the customer name associated to the session, even before picking up the session. <strong>SessionConfig.setCustomerName(...) only works, if it was invoked before creating a SessionConfig object.</strong> Note: Despite the function being static, it only works using one of the channel-based approaches, but don't work using the pin-based one. The default value of customer name is "Customer".</p>
 <p>After the session instance is created, the embedder application can start the session using <code>Session.connect(SessionConfig)</code> method.</p>
 <p>This method takes a <code>SessionConfig</code> object, which can be created using the static factory methods of the class.</p>
 <table>
@@ -227,9 +228,16 @@ factory.create(getApplicationContext(), apiKey, callback);</code></pre>
 <tr><td colspan="1" rowspan="1"><p><code>createWithChannelNameAndCompanyId(String, String)</code></p>
 </td><td colspan="1" rowspan="1"><p>This method takes the <strong>Channel Name</strong> and the <strong>Company ID</strong></p>
 </td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>setCustomerName(String)</code></p>
+</td><td colspan="1" rowspan="1"><p>This method takes the <strong>Customer Name</strong></p>
+</td></tr>
 </table>
 <aside class="warning"><p>When using the channel-based approach, we recommend that your app obtain your specific Channel ID(s) or Channel Name/CompanyID pair(s) from your backend server instead of hard-coding them to your app&#39;s source code. This way you will be able to change your channel configuration without updating your app.</p>
 </aside>
+<pre><code>//uncomment the below line if you want to set the customer name
+//SessionConfig.setCustomerName("YOUR CUSTOMER NAME"); //only works, if it was invoked before creating a SessionConfig object
+SessionConfig sessionConfig = ...;
+session.connect(sessionConfig);</code></pre>
 
 
       </google-codelab-step>
