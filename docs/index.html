@@ -763,6 +763,8 @@ extension.unmuteRecording();</code></pre>
 <p>Above API level 23 the dangerous subset of the mentioned permissions must be requested from the user through a runtime permission dialog. For further information on this topic, consult the <a href="https://developer.android.com/training/permissions/requesting.html" target="_blank">official guide</a>.</p>
 <p>The SDK requests these permissions when they are required for certain functionalities. There is no need for the embedder application to handle those requests. If your app is in foreground, the system permission request dialog is displayed, otherwise a notification is displayed.</p>
 </aside>
+<aside class="warning"><p>From Android 11 the deviceinfo module still requires the embedder application to manually ask for the read phone state permission prior to creating a session.</p>
+</aside>
 <aside class="warning"><p>The camerastreaming module still requires the embedder application to manually ask for the camera and record audio permission prior to creating a session.</p>
 </aside>
 <h2><img alt="foo.gif" style="max-width: 282.45px" src="img/9819102bcdc0f0ae.png"></h2>
