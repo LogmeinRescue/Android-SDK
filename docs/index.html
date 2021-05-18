@@ -763,7 +763,8 @@ extension.unmuteRecording();</code></pre>
 <p>Above API level 23 the dangerous subset of the mentioned permissions must be requested from the user through a runtime permission dialog. For further information on this topic, consult the <a href="https://developer.android.com/training/permissions/requesting.html" target="_blank">official guide</a>.</p>
 <p>The SDK requests these permissions when they are required for certain functionalities. There is no need for the embedder application to handle those requests. If your app is in foreground, the system permission request dialog is displayed, otherwise a notification is displayed.</p>
 </aside>
-<aside class="warning"><p>From Android 11 the deviceinfo module still requires the embedder application to manually ask for the read phone state permission prior to creating a session.</p>
+<aside class="special"><p><strong>Whiteboard over System apps</strong></p>
+Some System apps like Settings prevent Whiteboard content over their windows. This is because of HIDE_NON_SYSTEM_OVERLAY_WINDOWS flag what is hides non system overlays. If you open these windows then Whiteboard content will disappear. After navigating to other windows the content will appear again.
 </aside>
 <aside class="warning"><p>The camerastreaming module still requires the embedder application to manually ask for the camera and record audio permission prior to creating a session.</p>
 </aside>
