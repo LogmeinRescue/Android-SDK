@@ -3,10 +3,10 @@
   <groupId>com.logmein.rescuesdk</groupId>
   <artifactId>core</artifactId>
   <versioning>
-    <release>3.8.0</release>
+    <release>3.8.1</release>
     <versions>
-      <version>3.8.0</version>
+      <version>3.8.1</version>
     </versions>
-    <lastUpdated>20220221161506</lastUpdated>
+    <lastUpdated>20220630123101</lastUpdated>
   </versioning>
 </metadata>
