@@ -3,10 +3,10 @@
   <groupId>com.logmein.rescuesdk</groupId>
   <artifactId>libyuv</artifactId>
   <versioning>
-    <release>3.8.2</release>
+    <release>3.8.3</release>
     <versions>
-      <version>3.8.2</version>
+      <version>3.8.3</version>
     </versions>
-    <lastUpdated>20220704131129</lastUpdated>
+    <lastUpdated>20220707150631</lastUpdated>
   </versioning>
 </metadata>
