@@ -1,0 +1,142 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.logmein.rescuesdk",
+    "module": "appscreenstreaming",
+    "version": "3.8.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.5",
+      "buildId": "5lbnhk4usvfvfh5w47lwrrezzu"
+    }
+  },
+  "variants": [
+    {
+      "name": "api",
+      "attributes": {
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.logmein.rescuesdk",
+          "module": "screenstreamingcore",
+          "version": {
+            "requires": "3.8.6"
+          }
+        }
+      ]
+    },
+    {
+      "name": "runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "javax.inject",
+          "module": "javax.inject",
+          "version": {
+            "requires": "1"
+          }
+        },
+        {
+          "group": "com.google.guava",
+          "module": "guava",
+          "version": {
+            "requires": "18.0"
+          }
+        },
+        {
+          "group": "com.google.inject",
+          "module": "guice",
+          "version": {
+            "requires": "4.1.0"
+          },
+          "excludes": [
+            {
+              "group": "aopalliance",
+              "module": "aopalliance"
+            },
+            {
+              "group": "javax.inject",
+              "module": "javax.inject"
+            }
+          ],
+          "thirdPartyCompatibility": {
+            "artifactSelector": {
+              "name": "guice",
+              "type": "jar",
+              "extension": "jar",
+              "classifier": "no_aop"
+            }
+          }
+        },
+        {
+          "group": "com.google.inject.extensions",
+          "module": "guice-multibindings",
+          "version": {
+            "requires": "4.1.0"
+          },
+          "excludes": [
+            {
+              "group": "com.google.inject",
+              "module": "guice"
+            }
+          ]
+        },
+        {
+          "group": "com.google.inject.extensions",
+          "module": "guice-assistedinject",
+          "version": {
+            "requires": "4.1.0"
+          },
+          "excludes": [
+            {
+              "group": "com.google.inject",
+              "module": "guice"
+            }
+          ]
+        },
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "1.7.12"
+          }
+        },
+        {
+          "group": "com.annimon",
+          "module": "stream",
+          "version": {
+            "requires": "1.1.9"
+          }
+        },
+        {
+          "group": "com.logmein.eventbus",
+          "module": "otto",
+          "version": {
+            "requires": "1.3.8"
+          }
+        },
+        {
+          "group": "com.orange.dgil.trail",
+          "module": "trail-core-lib",
+          "version": {
+            "requires": "1.2.5"
+          }
+        },
+        {
+          "group": "com.logmein.rescuesdk",
+          "module": "screenstreamingcore",
+          "version": {
+            "requires": "3.8.6"
+          }
+        }
+      ]
+    }
+  ]
+}
