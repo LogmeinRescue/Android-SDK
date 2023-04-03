@@ -1,0 +1,31 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.logmein.rescuesdk",
+    "module": "libyuv",
+    "version": "3.8.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.5",
+      "buildId": "5lbnhk4usvfvfh5w47lwrrezzu"
+    }
+  },
+  "variants": [
+    {
+      "name": "api",
+      "attributes": {
+        "org.gradle.usage": "java-api"
+      }
+    },
+    {
+      "name": "runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime"
+      }
+    }
+  ]
+}
