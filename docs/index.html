@@ -59,10 +59,10 @@
 }
 ...
 dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.6.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.9.4@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   implementation(&#39;com.logmein.rescuesdk:core:3.6.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.9.4@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -213,6 +213,7 @@ factory.create(getApplicationContext(), apiKey, callback);</code></pre>
 </ul>
 <p>Note that the <code>SessionFactory.create(...)</code> call is asynchronous. It creates a session object in a background thread, and invokes the supplied <em>callback</em> once the instance is created. The callback is invoked in the main thread.</p>
 <p>By calling <code>SessionConfig.setCustomerName(String name)</code>, you let the Technician see the customer name associated with the session even before picking up the session. <strong>SessionConfig.setCustomerName(...) only works if it was invoked before creating a SessionConfig object.</strong> Note: Despite the function being static, it only works using one of the channel-based approaches, but does not work using the pin-based one. The default value of customer name is "Customer".</p>
+<p>By calling <code>SessionConfig.useEuEnvironment()</code>, you set the SDK to use EU related environment resources.</p>
 <p>After the session instance is created, the embedder application can start the session using <code>Session.connect(SessionConfig)</code> method.</p>
 <p>This method takes a <code>SessionConfig</code> object, which can be created using the static factory methods of the class.</p>
 <table>
@@ -429,7 +430,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.6.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.4@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -490,7 +491,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.6.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.4@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -554,7 +555,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.6.0@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.9.4@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -601,7 +602,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.6.0@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.9.4@aar&#39;) {
       transitive = true 
    }     
    ...     
