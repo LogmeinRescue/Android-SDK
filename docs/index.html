@@ -59,10 +59,10 @@
 }
 ...
 dependencies {
-   implementation(&#39;com.logmein.rescuesdk:resources:3.9.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:resources:3.9.7@aar&#39;) {
       transitive = false // avoid resources dependencies
    }
-   implementation(&#39;com.logmein.rescuesdk:core:3.9.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:core:3.9.7@aar&#39;) {
       transitive = true 
    }     
    // other SDK modules that your app requires
@@ -430,7 +430,7 @@ bus.add(yourHandler);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.7@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -491,7 +491,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:appscreenstreaming:3.9.7@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -555,7 +555,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.9.4@aar&#39;) {
+    implementation(&#39;com.logmein.rescuesdk:devicescreenstreaming:3.9.7@aar&#39;) {
       transitive = true 
    }     
    ...     
@@ -595,6 +595,18 @@ sessionFactory.create(...);</code></pre>
 
       </google-codelab-step>
     
+      <google-codelab-step label="Device screen sharing (API34&#43;)" duration="0">
+        <p>Please implement your ForegorundService for MediaProjectiona as described here: https://developer.android.com/about/versions/14/changes/fgs-types-required#media-projection</p>
+        <p>The SDK provides two events to handle the above case: <strong>MediaProjectionRequestGranted</strong> and <strong>ForegroundServiceStartedEvent</strong></p>
+
+        <p>Please start your service as ForeGroundService after receiving the MediaProjectionRequestGranted event. After the ForegroundServie has started successfully, please dispatch the ForegroundServiceStartedEvent event.</p>
+        <p><strong>YourService.java (snippet)</strong></p>
+<pre><code>@Subscribe
+  public void onMediaProjectionRequestGranted(MediaProjectionRequestGranted event) {
+      startForeground(YOUR_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+      session.getEventBus().dispatch(new ForegroundServiceStartedEvent());
+  }</code></pre>
+      </google-codelab-step>
       <google-codelab-step label="Camera sharing" duration="0">
         <p>The SDK can be used to stream the camera image of the device to the Technician Console. This way the technician can see what the user sees through the camera of the device.</p>
 <p>You can enable camera streaming in the SDK with the following steps. Please check the <strong>Permission Handling</strong> step to avoid difficulties.</p>
@@ -602,7 +614,7 @@ sessionFactory.create(...);</code></pre>
 <p><strong>build.gradle (App)</strong></p>
 <pre><code>dependencies {
    ...
-   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.9.4@aar&#39;) {
+   implementation(&#39;com.logmein.rescuesdk:camerastreaming:3.9.7@aar&#39;) {
       transitive = true 
    }     
    ...     
