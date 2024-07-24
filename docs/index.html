@@ -596,10 +596,10 @@ sessionFactory.create(...);</code></pre>
       </google-codelab-step>
     
       <google-codelab-step label="Device screen sharing (API34&#43;)" duration="0">
-        <p>Please implement your ForegorundService for MediaProjection as described <a href="https://developer.android.com/about/versions/14/changes/fgs-types-required#media-projection" target="_blank">here</a></p>
-        <p>The SDK provides two events to handle the above case: <strong>MediaProjectionRequestGranted</strong> and <strong>ForegroundServiceStartedEvent</strong></p>
+        <p>Please implement your ForegorundService for MediaProjection as described <a href="https://developer.android.com/about/versions/14/changes/fgs-types-required#media-projection" target="_blank">here</a>.</p>
+        <p>The SDK provides two events to handle the above case: <strong>MediaProjectionRequestGranted</strong> and <strong>ForegroundServiceStartedEvent</strong>.</p>
 
-        <p>Please start your service as ForeGroundService after receiving the MediaProjectionRequestGranted event. After the ForegroundServie has started successfully, please dispatch the ForegroundServiceStartedEvent event.</p>
+        <p>Please start your service as ForegroundService after receiving the MediaProjectionRequestGranted event. After the ForegroundServie has started successfully, please dispatch the ForegroundServiceStartedEvent.</p>
         <p><strong>YourService.java (snippet)</strong></p>
 <pre><code>@Subscribe
   public void onMediaProjectionRequestGranted(MediaProjectionRequestGranted event) {
