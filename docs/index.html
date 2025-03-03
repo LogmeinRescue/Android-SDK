@@ -596,15 +596,13 @@ sessionFactory.create(...);</code></pre>
       </google-codelab-step>
     
       <google-codelab-step label="Device screen sharing (API34&#43;)" duration="0">
-        <p>Please implement your ForegorundService for MediaProjection as described <a href="https://developer.android.com/about/versions/14/changes/fgs-types-required#media-projection" target="_blank">here</a>.</p>
-        <p>The SDK provides two events to handle the above case: <strong>MediaProjectionRequestGranted</strong> and <strong>ForegroundServiceStartedEvent</strong>.</p>
-
-        <p>Please start your service as ForegroundService after receiving the MediaProjectionRequestGranted event. After the ForegroundServie has started successfully, please dispatch the ForegroundServiceStartedEvent.</p>
+        <p>Implement your foreground service for MediaProjection as described <a href="https://developer.android.com/about/versions/14/changes/fgs-types-required#media-projection" target="_blank">here</a>.</p>
+        <p>Start your service as a foreground service when receiving the <b>StartForegroundServiceEvent</b> event and notify the Rescue SDK via the callback once your foreground service started.</p>
         <p><strong>YourService.java (snippet)</strong></p>
 <pre><code>@Subscribe
-  public void onMediaProjectionRequestGranted(MediaProjectionRequestGranted event) {
+  public void onStartForegroundServiceEvent(StartForegroundServiceEvent event) {
       startForeground(YOUR_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
-      session.getEventBus().dispatch(new ForegroundServiceStartedEvent());
+      event.getCallback().onStarted();
   }</code></pre>
       </google-codelab-step>
       <google-codelab-step label="Camera sharing" duration="0">
@@ -887,6 +885,12 @@ Some System apps like Settings prevent Whiteboard content over their windows. Th
 
       </google-codelab-step>
     
+      <google-codelab-step label="Migration to version 3.9.16" duration="0">
+        <ul>
+          <li>The MediaProjectionRequestGranted event has been removed. Update your project to start the foreground service by receiving the StartForegroundServiceEvent instead, as described under the step <b>Device screen sharing (API34+)</b>.</li>
+      </ul>
+      </google-codelab-step>
+
       <google-codelab-step label="Migration to version 3.2.3" duration="0">
         <ul>
 <li>Update your project to use the android plugin 3.0.0+ and gradle 4.0+</li>
